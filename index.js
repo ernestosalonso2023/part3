@@ -1,6 +1,8 @@
 const express = require("express");
 const morgan = require("morgan");
 const app = express();
+const cors = require('cors')
+app.use(cors()
 const requestLogger = (request, response, next) => {
   console.log("Method:", request.method);
   console.log("Path:  ", request.path);
