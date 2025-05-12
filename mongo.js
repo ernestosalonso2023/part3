@@ -1,13 +1,14 @@
-import mongoose from "mongoose";
+//import mongoose from "mongoose";
 const mongoose = require('mongoose')
-
+let password = null
 if (process.argv.length<3) {
   console.log('give password as argument')
   process.exit(1)
 } else if (process.argv.length==3) {
-    const password = process.argv[2]
+    console.log("password",process.argv[2])
+  password = process.argv[2]
 } else if (process.argv.length==4 || process.argv.length==5) {
-    const password = process.argv[2]
+    password = process.argv[2]
     const name = process.argv[3]
     const number = process.argv[4]
     console.log("name",name)
