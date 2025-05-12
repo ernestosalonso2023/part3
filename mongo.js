@@ -15,14 +15,16 @@ if (process.argv.length<3 || process.argv.length>5) {
   console.log("Remember If the name contains spaces, it must be enclosed in quotation marks: Example: 'Ernesto Perez'")
   process.exit(1)
 } else if (process.argv.length==3) {
-  //  console.log("password",process.argv[2])
     password = process.argv[2]
     url =`mongodb+srv://erneyud:${password}@cluster0.u8dlg0p.mongodb.net/PersonsApp?retryWrites=true&w=majority`
-    console.log("Connect",mongoose.connect(url))
+    //console.log("Connect",mongoose.connect(url))
+    mongoose.connect(url)
     Contact.find({}).then(result => {
-        console.log('contacts:')
+        console.log('phonebook:')
         result.forEach(contact => {
-          console.log(contact)
+         console.log(contact.name, contact.number)   
+        //  console.log(contact)
+
         })
         mongoose.connection.close()
       })
