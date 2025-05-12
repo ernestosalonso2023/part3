@@ -41,6 +41,7 @@ if (process.argv.length<3) {
       number: number,
     })
     url =`mongodb+srv://erneyud:${password}@cluster0.u8dlg0p.mongodb.net/PersonsApp?retryWrites=true&w=majority`
+    mongoose.connect(url)
     contact.save().then(result => {
         console.log('Added',name,'number',number, 'to phonebook')
         mongoose.connection.close()
