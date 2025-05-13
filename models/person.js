@@ -1,23 +1,38 @@
 //import mongoose from "mongoose";
 const mongoose = require('mongoose')
+const url = process.env.MONGODB_URI
 let password = null
-let url = null
+//let url = null
 mongoose.set('strictQuery',false)
 const contactSchema = new mongoose.Schema({
   name: String,
   number: String
   
 })
+contactSchema.set('toJSON', {
+  transform: (document, returnedObject) => {
+    returnedObject.id = returnedObject._id.toString()
+    delete returnedObject._id
+    delete returnedObject.__v
+  }
+})
 const Contact = mongoose.model('Contact', contactSchema)
+//password = process.argv[2]
+//url =`mongodb+srv://erneyud:${password}@cluster0.u8dlg0p.mongodb.net/PersonsApp?retryWrites=true&w=majority`
+//mongoose.connect(url)
 
-if (process.argv.length<3 || process.argv.length>5) {
+
+console.log('connecting to', url)
+
+
+/*if (process.argv.length<3 || process.argv.length>5) {
   console.log('give password as argument')
   console.log("Remember If the name contains spaces, it must be enclosed in quotation marks: Example: 'Ernesto Perez'")
   process.exit(1)
 } else if (process.argv.length==3) {
     password = process.argv[2]
     url =`mongodb+srv://erneyud:${password}@cluster0.u8dlg0p.mongodb.net/PersonsApp?retryWrites=true&w=majority`
-    //console.log("Connect",mongoose.connect(url))
+    console.log("Connect",mongoose.connect(url))
     mongoose.connect(url)
     Contact.find({}).then(result => {
         console.log('phonebook:')
@@ -42,4 +57,5 @@ if (process.argv.length<3 || process.argv.length>5) {
         console.log('Added',name,'number',number, 'to phonebook')
         mongoose.connection.close()
       })
- }
+ }*/
+module.exports = mongoose.model('Contact', contactSchema)

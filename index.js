@@ -1,44 +1,28 @@
 const express = require('express')
 const morgan = require('morgan')    
+require('dotenv').config()
 const app = express()
 const cors = require('cors')
+const contact=require('./models/person')
+//console.log("url",process.env.MONGODB_URI)
+const url = process.env.MONGODB_URI
+//console.log('connecting to', url)
+const mongoose = require('mongoose')
 app.use(express.static('dist'))
 app.use(cors())
 const requestLogger = (request, response, next) => {
-    console.log('Method:', request.method)
+   /* console.log('Method:', request.method)
     console.log('Path:  ', request.path)
     console.log('Body:  ', request.body)
-    console.log('---')
+    console.log('---')*/
     next()
   }
 app.use(express.json())
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :body'))
 app.use(requestLogger)
 
-let persons=[
-    { 
-      "id": 1,
-      "name": "Arto Hellas", 
-      "number": "040-123456"
-    },
-    { 
-      "id": 2,
-      "name": "Ada Lovelace", 
-      "number": "39-44-5323523"
-    },
-    { 
-      "id": 3,
-      "name": "Dan Abramov", 
-      "number": "12-43-234345"
-    },
-    { 
-      "id": 4,
-      "name": "Mary Poppendieck", 
-      "number": "39-23-6423122"
-    }
-]
- 
-morgan.token('body', function(req, res) {
+
+ morgan.token('body', function(req, res) {
     return JSON.stringify(req.body)
   })
 
@@ -46,8 +30,23 @@ app.get('/', (req, res) => {
     res.send('<h1>Welcome to our api</h1>')
     })
 app.get('/api/persons', (req, res) => {  
-    res.json(persons)
-    })
+    mongoose.connect(url)
+  .then(result => {
+    console.log('connected to MongoDB')
+    contact.find({}).then(result => {
+        console.log('phonebook:')
+        result.forEach(contact => {
+         console.log(contact.name, contact.number)   
+        //  console.log(contact)
+        })
+        res.json(result)
+        mongoose.connection.close()
+      })
+  })
+  .catch(error => {
+    console.log('error connecting to MongoDB:', error.message)
+  })  
+})
 app.get('/info', (req, res) => {
     const date = new Date()
     const info = `<p>Phonebook has info for ${persons.length} people</p><p>${date}</p>`
@@ -93,6 +92,7 @@ const unknownEndpoint = (request, response) => {
   }
   
   app.use(unknownEndpoint)
-  const PORT = process.env.PORT || 3001
+  const PORT = process.env.PORT
+  //const PORT = process.env.PORT || 3001
   app.listen(PORT)
   console.log(`Server running on port ${PORT}`)
